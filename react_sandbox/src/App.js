@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
+import Radium, {StyleRoot} from 'radium';
+
 import ValidationComponent from './Assignment/ValidationComponent/ValidationComponent';
 import Char from './Assignment/Char/Char';
 
@@ -69,11 +71,16 @@ class App extends Component {
 
 	render() {
 		const style = {
-			backgroundColor: 'white',
+			backgroundColor: 'green',
+			color: 'white',
 			font: 'inherit',
 			border: '1px solid blue',
 			padding: '8px',
-			cursor: 'pointer'
+			cursor: 'pointer',
+			':hover': {
+				backgroundColor: 'lightgreen',
+				color: 'black'
+			}
 		};
 
 		let persons = null;
@@ -85,7 +92,21 @@ class App extends Component {
 						return <Person name={person.name} age={person.age} key={person.id} click={() => this.deletePersonHandler(index)} changed={(event) => this.nameChangedHandler(event, person.id)} />
 					})}
 				</div>
-			)
+			);
+			
+			style.backgroundColor = 'red';
+			style[':hover'] = {
+				backgroundColor: 'salmon',
+				color: 'black'
+			};
+		}
+
+		const classes = [];
+		if(this.state.persons.length <= 2){
+			classes.push('red');
+		}
+		if(this.state.persons.length <= 1){
+			classes.push('bold');
 		}
 
 		const charList = this.state.userInput.split('').map((ch, index) => {
@@ -93,20 +114,23 @@ class App extends Component {
 		});
 
 		return (
-			<div className="App">
-				<h1>Hello</h1>
-				<button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
-				{persons}
+			<StyleRoot>
+				<div className="App">
+					<h1>Hello</h1>
+					<p className={classes.join(' ')}>This is working!</p>
+					<button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
+					{persons}
 
-				<hr />
-				<input type="text" onChange={this.inputChangedHandler} value={this.state.userInput} />
-				<p>{this.state.userInput}</p>
-				<ValidationComponent inputLength={this.state.userInput.length} />
+					<hr />
+					<input type="text" onChange={this.inputChangedHandler} value={this.state.userInput} />
+					<p>{this.state.userInput}</p>
+					<ValidationComponent inputLength={this.state.userInput.length} />
 
-				{charList}
-			</div>
+					{charList}
+				</div>
+			</StyleRoot>
 		);
 	}
 }
 
-export default App;
+export default Radium(App);
